@@ -1,0 +1,50 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: voting_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - voting_network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: voting_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URL_LOCAL=mongodb://mongodb:27017/voting_app
+      - JWT_SECRET=enterprise_production_super_secret_key_123!
+      - JWT_REFRESH_SECRET=enterprise_production_super_refresh_key_456!
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - voting_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: voting_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - voting_network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  voting_network:
+    driver: bridge

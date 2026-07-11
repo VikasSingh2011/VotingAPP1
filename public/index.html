@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVote - Modern Voting Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="A secure, smooth, and responsive voting application.">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="glass-nav">
+            <div class="logo">
+                <h2>SecureVote</h2>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <!-- Dynamically populated -->
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="container">
+            <!-- Loading Spinner -->
+            <div id="loader" class="loader hidden"></div>
+
+            <!-- Toast Notifications -->
+            <div id="toast-container" class="toast-container"></div>
+
+            <!-- View: Login / Signup -->
+            <section id="view-auth" class="view active">
+                <div class="auth-container glass-panel">
+                    <div class="auth-tabs">
+                        <button class="tab active" onclick="switchAuthTab('login')">Login</button>
+                        <button class="tab" onclick="switchAuthTab('signup')">Sign Up</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="form-login" class="auth-form active" onsubmit="handleLogin(event)">
+                        <h3>Welcome Back</h3>
+                        <div class="form-group">
+                            <label for="login-aadhar">Aadhar Card Number</label>
+                            <input type="text" id="login-aadhar" required placeholder="Enter your 12-digit Aadhar" pattern="[0-9]{12}">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required placeholder="Enter password">
+                        </div>
+                        <button type="submit" class="btn-primary">Login</button>
+                    </form>
+
+                    <!-- Signup Form -->
+                    <form id="form-signup" class="auth-form" onsubmit="handleSignup(event)">
+                        <h3>Create Account</h3>
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" id="signup-name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-age">Age</label>
+                            <input type="number" id="signup-age" required min="18" placeholder="Must be 18+">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" placeholder="Optional">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-mobile">Mobile Number</label>
+                            <input type="text" id="signup-mobile" placeholder="Optional">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-address">Address</label>
+                            <input type="text" id="signup-address" required placeholder="Full Address">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-aadhar">Aadhar Card Number</label>
+                            <input type="text" id="signup-aadhar" required placeholder="12-digit Aadhar" pattern="[0-9]{12}">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" required placeholder="Create a password">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-role">Role</label>
+                            <select id="signup-role">
+                                <option value="voter">Voter</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Sign Up</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- View: Voter Dashboard -->
+            <section id="view-voter" class="view hidden">
+                <div class="dashboard-header glass-panel">
+                    <h2>Voter Dashboard</h2>
+                    <p>Welcome, <span id="voter-name">User</span>!</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="glass-panel main-panel">
+                        <h3>Candidates</h3>
+                        <div id="candidates-list" class="candidates-grid">
+                            <!-- Candidates injected here -->
+                        </div>
+                    </div>
+                    
+                    <div class="glass-panel side-panel">
+                        <h3>Live Vote Counts</h3>
+                        <div id="live-votes-list" class="votes-list">
+                            <!-- Live votes injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Admin Dashboard -->
+            <section id="view-admin" class="view hidden">
+                <div class="dashboard-header glass-panel">
+                    <h2>Admin Dashboard</h2>
+                    <p>Manage Candidates and System Settings</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="glass-panel main-panel">
+                        <div class="panel-header">
+                            <h3>Manage Candidates</h3>
+                            <button class="btn-secondary" onclick="openAddCandidateModal()">+ Add Candidate</button>
+                        </div>
+                        <div id="admin-candidates-list" class="admin-candidates-list">
+                            <!-- Admin candidates injected here -->
+                        </div>
+                    </div>
+                    
+                    <div class="glass-panel side-panel">
+                        <h3>Live Results</h3>
+                        <div id="admin-live-votes-list" class="votes-list">
+                            <!-- Live votes injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Profile Settings -->
+            <section id="view-profile" class="view hidden">
+                <div class="glass-panel profile-panel">
+                    <h2>Profile Settings</h2>
+                    <form id="form-change-password" onsubmit="handleChangePassword(event)">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-add-candidate" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <span class="close-btn" onclick="closeModal('modal-add-candidate')">&times;</span>
+            <h3>Add New Candidate</h3>
+            <form id="form-add-candidate" onsubmit="handleAddCandidate(event)">
+                <div class="form-group">
+                    <label for="candidate-name">Name</label>
+                    <input type="text" id="candidate-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="candidate-party">Party</label>
+                    <input type="text" id="candidate-party" required>
+                </div>
+                <div class="form-group">
+                    <label for="candidate-age">Age</label>
+                    <input type="number" id="candidate-age" required min="25">
+                </div>
+                <button type="submit" class="btn-primary">Add Candidate</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 require('dotenv').config(); // Load environment variables from .env file
 //define the mongoDB connection URL
 //const mongoURL = 'mongodb://localhost:27017/hotels'//Replace 'hotels' with your database name. This mongoURL connect local database 
-const mongoURL = process.env.MONGODB_URL_LOCAL //this line tell that we use env file MONGODB_URL_LOCAL variable in our project
+const mongoURL = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGODB_URL_LOCAL;
 //const mongoURL= 'mongodb+srv://singhvikas1004_db_user:vikas12345@cluster0.zqji7a0.mongodb.net/';//this mongoURL connect online database
 //const mongoURL = process.env.MONGODB_URL;//this line tell that we use env file MONGODB_URL variable in our project
 
-
+if (!mongoURL) {
+  throw new Error('Missing MongoDB connection string. Set MONGODB_URI, MONGODB_URL, or MONGODB_URL_LOCAL.');
+}
 
 //set up MongoDB connection
 mongoose.connect(mongoURL,{
@@ -29,5 +31,5 @@ db.on('error', (err) =>{//when error occers then this message Print
 });
 
 db.on('disconnected', () =>{//when connection disconnect then this message Print
-  console.log('connected to MongoDB server');
+  console.log('disconnected from MongoDB server');
 });

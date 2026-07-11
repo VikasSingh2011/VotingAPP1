@@ -13,21 +13,26 @@ const candidateSchema = new mongoose.Schema({
   },
   age:{
       type: Number,
-      required: true,
+      required: false,
   },
-  votes:[
-    {
-      user:{
-        type: mongoose.Schema.Types.ObjectId,//here we use ObjectId because we want to store the id of the user who voted
-        ref: 'User',//it means votes is reference to user model
-        required: true
-      },
-      votedAt:{
-        type: Date,//it means votedAt is date type
-        default: Date.now//by default votedAt is current date and time
-      }
-    }
-  ],
+  electionId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Election',
+    required: true
+  },
+  manifesto:{
+    type: String,
+    required: true
+  },
+  symbol:{
+    type: String,
+    required: true
+  },
+  status:{
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
   voteCount:{
     type: Number,
     default: 0//by default voteCount is 0

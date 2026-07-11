@@ -22,7 +22,7 @@ const jwtAuthMiddleware = (req, res, next) => {//this function call when we hit 
     next();//move to next phase
   }
   catch(err) {//if error occers then move to catch phase
-    console.log(err);
+    console.error('Token verification failed: Invalid or expired token');
     return res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
 }
